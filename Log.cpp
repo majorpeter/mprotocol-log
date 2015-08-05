@@ -1,11 +1,11 @@
+#include <Log/StdioLog.h>
 #include "Log.h"
-#include "ItmLog.h"
 
 Log* Log::getInstance() {
     static Log* instance = NULL;
     if (instance == NULL) {
 #if LOG_MODE == LOG_MODE_ITM
-        instance = new ItmLog();
+        instance = new StdioLog();
 #else
         instance = new Log();
 #endif
