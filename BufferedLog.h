@@ -10,12 +10,14 @@
 
 #include "Log.h"
 #include "Nodes/Node.h"
+#include "Time/Timer.h"
 
 class AbstractSerialInterface;
 
 typedef struct {
 	LogLevel_t level;
 	LogTag_t tag;
+	Timer::ticks_t tick;
 	char *message;
 	uint16_t messageLength;
 	uint32_t parameter;

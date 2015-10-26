@@ -94,6 +94,7 @@ void BufferedLog::addLog(LogLevel_t level, LogTag_t tag, const char* message, ui
 
 	entries[nextEntryIndex].level = level;
 	entries[nextEntryIndex].tag = tag;
+	entries[nextEntryIndex].tick = Timer::getTime();
 	entries[nextEntryIndex].message = storedMessage;
 	entries[nextEntryIndex].messageLength = (uint16_t) messageLength;
 	entries[nextEntryIndex].parameter = parameter;
@@ -107,8 +108,9 @@ void BufferedLog::hanlder() {
 		case LogLevel_t::Warning: serialIface->writeBytes((uint8_t*) "LW/", 3); break;
 		case LogLevel_t::Error:   serialIface->writeBytes((uint8_t*) "LE/", 3); break;
 		}
-		//TODO time
 		char buffer[10];
+		sprintf(buffer, "%08lX:", entries[firstEntryIndex].tick);
+		serialIface->writeBytes((uint8_t*) buffer, 9);
 		sprintf(buffer, "%08lX[", entries[firstEntryIndex].parameter);
 		serialIface->writeBytes((uint8_t*) buffer, 9);
 		serialIface->writeString(entries[firstEntryIndex].tag);
@@ -140,7 +142,6 @@ ProtocolResult_t BufferedLog::getMessageOverrun(uint32_t *value) {
 }
 
 ProtocolResult_t BufferedLog::invokeTestLog(const char*) {
-	for (uint8_t i = 0; i < 10; i++)
-		Log::Notice(LOG, "test", firstEntryIndex);
+	Log::Notice(LOG, "test", firstEntryIndex);
 	return ProtocolResult_Ok;
 }
