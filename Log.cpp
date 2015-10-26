@@ -7,7 +7,11 @@ Log* Log::getInstance() {
 #if LOG_MODE == LOG_MODE_ITM
         instance = new StdioLog();
 #else
+  #if LOG_MODE == LOG_MODE_VCP
+        instance = new BufferedLog(VcpSerialInterface::getInstance());
+  #else
         instance = new Log();
+  #endif
 #endif
     }
     return instance;
