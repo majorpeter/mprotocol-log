@@ -131,12 +131,12 @@ void BufferedLog::hanlder() {
 	}
 }
 
-ProtocolResult_t BufferedLog::getEntryOverrun(uint32_t *value) {
+ProtocolResult_t BufferedLog::getEntryOverrun(uint32_t *value) const {
 	*value = entryOverrun;
 	return ProtocolResult_Ok;
 }
 
-ProtocolResult_t BufferedLog::getMessageOverrun(uint32_t *value) {
+ProtocolResult_t BufferedLog::getMessageOverrun(uint32_t *value) const {
 	*value = messageOverrun;
 	return ProtocolResult_Ok;
 }
