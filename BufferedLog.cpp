@@ -101,7 +101,7 @@ void BufferedLog::addLog(LogLevel_t level, LogTag_t tag, const char* message, ui
 	nextEntryIndex = (uint8_t) (((nextEntryIndex + 1) < BUFFERED_LOG_ENTRIES) ? nextEntryIndex + 1 : 0);
 }
 
-void BufferedLog::hanlder() {
+void BufferedLog::handler() {
 	for (; firstEntryIndex != nextEntryIndex; firstEntryIndex = (uint8_t) (((firstEntryIndex + 1) < BUFFERED_LOG_ENTRIES) ? firstEntryIndex + 1 : 0)) {
 		switch (entries[firstEntryIndex].level) {
 		case LogLevel_t::Notice:  serialIface->writeBytes((uint8_t*) "LN/", 3); break;

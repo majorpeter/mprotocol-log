@@ -20,7 +20,7 @@ public:
     static Log* getInstance();
     virtual ~Log() {}
 
-    virtual void hanlder() {}
+    virtual void handler() {}
 
     // dummy function for disabled logger
     virtual void addLog(LogLevel_t level, LogTag_t tag, const char* message = NULL, uint32_t parameter = 0) {}

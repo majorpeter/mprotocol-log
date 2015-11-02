@@ -41,7 +41,7 @@ public:
 	BufferedLog(AbstractSerialInterface *serialIface);
 	virtual ~BufferedLog();
 	virtual void addLog(LogLevel_t level, LogTag_t tag, const char* message = NULL, uint32_t parameter = 0);
-	virtual void hanlder();
+	virtual void handler();
 };
 
 #endif /* BUFFEREDLOG_H_ */
