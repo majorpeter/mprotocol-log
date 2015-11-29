@@ -7,6 +7,8 @@
 #include "config.h"
 #include "Tag.h"
 
+class AbstractSerialInterface;
+
 enum class LogLevel_t {
     Notice,
     Warning,
@@ -35,6 +37,9 @@ public:
     static void Error(LogTag_t tag, const char* message = NULL, uint32_t parameter = 0) __attribute__((always_inline)) {
         Log::getInstance()->addLog(LogLevel_t::Error, tag, message, parameter);
     }
+
+    // this can be used to switch interface to BT from USB after BT connection
+    virtual void switchSerialInterface(AbstractSerialInterface *interface) {}
 };
 
 #endif /* LOG_LOG_H_ */

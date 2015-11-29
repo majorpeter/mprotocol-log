@@ -27,6 +27,12 @@ class BufferedLog: public Log, public Node {
 	DECLARE_PROP_UINT32_RO(EntryOverrun);
 	DECLARE_PROP_UINT32_RO(MessageOverrun);
 	DECLARE_PROP_METHOD(TestLog);
+public:
+	BufferedLog(AbstractSerialInterface *serialIface);
+	virtual ~BufferedLog();
+	virtual void addLog(LogLevel_t level, LogTag_t tag, const char* message = NULL, uint32_t parameter = 0);
+	virtual void handler();
+    virtual void switchSerialInterface(AbstractSerialInterface *interface);
 private:
 	AbstractSerialInterface *serialIface;
 	LogEntry_t *entries;
@@ -36,12 +42,7 @@ private:
 	char *messageBuffer;
 	char *messagesBegin, *messagesEnd;
 
-	uint16_t entryOverrun, messageOverrun;
-public:
-	BufferedLog(AbstractSerialInterface *serialIface);
-	virtual ~BufferedLog();
-	virtual void addLog(LogLevel_t level, LogTag_t tag, const char* message = NULL, uint32_t parameter = 0);
-	virtual void handler();
+	uint16_t entryOverrunCount, messageOverrunCount;
 };
 
 #endif /* BUFFEREDLOG_H_ */

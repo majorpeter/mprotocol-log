@@ -30,7 +30,7 @@ BufferedLog::BufferedLog(AbstractSerialInterface *serialIface): Node("LOG"), ser
 	firstEntryIndex = nextEntryIndex = 0;	// no entries for now
 	messageBuffer = new char[MESSAGE_BUFFER_SIZE];
 	messagesBegin = messagesEnd = messageBuffer;
-	entryOverrun = messageOverrun = 0;
+	entryOverrunCount = messageOverrunCount = 0;
 
 	// set up node and attach to root
 	NODE_SET_PROPS(props);
@@ -45,7 +45,7 @@ BufferedLog::~BufferedLog() {
 void BufferedLog::addLog(LogLevel_t level, LogTag_t tag, const char* message, uint32_t parameter) {
 	// exit if the entry array is already full
 	if ((((nextEntryIndex + 1) < BUFFERED_LOG_ENTRIES) ? nextEntryIndex + 1 : 0) == firstEntryIndex) {
-		entryOverrun++;
+		entryOverrunCount++;
 		return;
 	}
 
@@ -73,7 +73,7 @@ void BufferedLog::addLog(LogLevel_t level, LogTag_t tag, const char* message, ui
 	if (dropMsg) {
 		storedMessage = NULL;
 		messageLength = 0;
-		messageOverrun++;
+		messageOverrunCount++;
 	} else {
 		storedMessage = messagesEnd;
 		size_t bytesToCopy = messageLength;
@@ -131,13 +131,17 @@ void BufferedLog::handler() {
 	}
 }
 
+void BufferedLog::switchSerialInterface(AbstractSerialInterface *interface) {
+	this->serialIface = interface;
+}
+
 ProtocolResult_t BufferedLog::getEntryOverrun(uint32_t *value) const {
-	*value = entryOverrun;
+	*value = entryOverrunCount;
 	return ProtocolResult_Ok;
 }
 
 ProtocolResult_t BufferedLog::getMessageOverrun(uint32_t *value) const {
-	*value = messageOverrun;
+	*value = messageOverrunCount;
 	return ProtocolResult_Ok;
 }
 
