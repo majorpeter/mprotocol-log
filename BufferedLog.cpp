@@ -10,8 +10,8 @@
 #include <Nodes/RootNode.h>
 #include <stdio.h>
 
-#define BUFFERED_LOG_ENTRIES ((uint8_t) 10)
-#define MESSAGE_BUFFER_SIZE  0x100
+#define BUFFERED_LOG_ENTRIES ((uint8_t) 20)
+#define MESSAGE_BUFFER_SIZE  0x200
 
 MK_PROP_UINT32_RO(BufferedLog, EntryOverrun, "Count of log entries lost because of full circular buffer.");
 MK_PROP_UINT32_RO(BufferedLog, MessageOverrun, "Count of messages lost because of full circular buffer");
@@ -129,6 +129,7 @@ void BufferedLog::handler() {
 		}
 		serialIface->writeBytes((uint8_t*)"\n", 1);
 	}
+	serialIface->handler();
 }
 
 void BufferedLog::switchSerialInterface(AbstractSerialInterface *interface) {

@@ -1,4 +1,5 @@
 #include <Log/StdioLog.h>
+#include <Log/BufferedLog.h>
 #include "Log.h"
 
 Log* Log::getInstance() {
@@ -7,7 +8,7 @@ Log* Log::getInstance() {
 #if LOG_MODE == LOG_MODE_ITM
         instance = new StdioLog();
 #else
-  #if LOG_MODE == LOG_MODE_VCP
+  #if LOG_MODE == LOG_MODE_SERIAL
         instance = new BufferedLog(VcpSerialInterface::getInstance());
   #else
         instance = new Log();
