@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-void logExceptionStack(ExceptionStackFrame* frame, uint32_t cfsr, uint32_t mmfar, uint32_t bfar, uint32_t lr);
+void logExceptionStack(const char* cause, ExceptionStackFrame* frame, uint32_t cfsr, uint32_t mmfar, uint32_t bfar, uint32_t lr);
 
 #ifdef __cplusplus
 }

@@ -9,6 +9,7 @@
 #include <core_cm4.h>
 #include <diag/Trace.h>
 #include "Log.h"
+#include <LCD/Console.h>
 
 #if defined(TRACE)
 
@@ -27,9 +28,9 @@ LOG_TAG(EXCEPTION);
 // 3. Optionally clear BFARVALID or MMARVALID.
 // (See Joseph Yiu's book).
 
-void logExceptionStack(ExceptionStackFrame* frame, uint32_t cfsr,
+void logExceptionStack(const char* cause, ExceptionStackFrame* frame, uint32_t cfsr,
 		uint32_t mmfar, uint32_t bfar, uint32_t lr) {
-  Log::Error(EXCEPTION, "[HardFault]");
+  Log::Error(EXCEPTION, cause);
   Log::Error(EXCEPTION, "Stack frame:");
   Log::ErrorF(EXCEPTION, " R0 =  %08X", 0, frame->r0);
   Log::ErrorF(EXCEPTION, " R1 =  %08X", 0, frame->r1);
@@ -57,6 +58,8 @@ void logExceptionStack(ExceptionStackFrame* frame, uint32_t cfsr,
   Log::ErrorF(EXCEPTION, " LR/EXC_RETURN= %08X", 0, lr);
   // dump everything
   Log::getInstance()->handler();
+
+  Console::getInstance()->writeLine(cause);
 }
 
 #endif // defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__)
