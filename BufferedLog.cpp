@@ -25,7 +25,7 @@ PROP_ARRAY(props) = {
 
 LOG_TAG(LOG);
 
-BufferedLog::BufferedLog(AbstractSerialInterface *serialIface): Node("LOG"), serialIface(serialIface) {
+BufferedLog::BufferedLog(): Node("LOG") {
 	entries = new LogEntry_t[BUFFERED_LOG_ENTRIES];
 	firstEntryIndex = nextEntryIndex = 0;	// no entries for now
 	messageBuffer = new char[MESSAGE_BUFFER_SIZE];
@@ -101,39 +101,35 @@ void BufferedLog::addLog(LogLevel_t level, LogTag_t tag, const char* message, ui
 	nextEntryIndex = (uint8_t) (((nextEntryIndex + 1) < BUFFERED_LOG_ENTRIES) ? nextEntryIndex + 1 : 0);
 }
 
-void BufferedLog::handler() {
+void BufferedLog::handler(AbstractSerialInterface* interface) {
 	for (; firstEntryIndex != nextEntryIndex; firstEntryIndex = (uint8_t) (((firstEntryIndex + 1) < BUFFERED_LOG_ENTRIES) ? firstEntryIndex + 1 : 0)) {
 		switch (entries[firstEntryIndex].level) {
-		case LogLevel_t::Notice:  serialIface->writeBytes((uint8_t*) "LN/", 3); break;
-		case LogLevel_t::Warning: serialIface->writeBytes((uint8_t*) "LW/", 3); break;
-		case LogLevel_t::Error:   serialIface->writeBytes((uint8_t*) "LE/", 3); break;
+		case LogLevel_t::Notice:  interface->writeBytes((uint8_t*) "LN/", 3); break;
+		case LogLevel_t::Warning: interface->writeBytes((uint8_t*) "LW/", 3); break;
+		case LogLevel_t::Error:   interface->writeBytes((uint8_t*) "LE/", 3); break;
 		}
 		char buffer[10];
 		sprintf(buffer, "%08lX:", entries[firstEntryIndex].tick);
-		serialIface->writeBytes((uint8_t*) buffer, 9);
+		interface->writeBytes((uint8_t*) buffer, 9);
 		sprintf(buffer, "%08lX[", entries[firstEntryIndex].parameter);
-		serialIface->writeBytes((uint8_t*) buffer, 9);
-		serialIface->writeString(entries[firstEntryIndex].tag);
-		serialIface->writeBytes((uint8_t*)"]", 1);
+		interface->writeBytes((uint8_t*) buffer, 9);
+		interface->writeString(entries[firstEntryIndex].tag);
+		interface->writeBytes((uint8_t*)"]", 1);
 		if (entries[firstEntryIndex].message != NULL) {
 			if (entries[firstEntryIndex].message + entries[firstEntryIndex].messageLength < messageBuffer + MESSAGE_BUFFER_SIZE) {
-				serialIface->writeBytes((uint8_t*) entries[firstEntryIndex].message, entries[firstEntryIndex].messageLength);
+				interface->writeBytes((uint8_t*) entries[firstEntryIndex].message, entries[firstEntryIndex].messageLength);
 				messagesBegin += entries[firstEntryIndex].messageLength;
 			} else {
 				size_t bytesAtEndOfBuf = (messageBuffer + MESSAGE_BUFFER_SIZE) - entries[firstEntryIndex].message;
-				serialIface->writeBytes((uint8_t*) entries[firstEntryIndex].message, (uint16_t) bytesAtEndOfBuf);
+				interface->writeBytes((uint8_t*) entries[firstEntryIndex].message, (uint16_t) bytesAtEndOfBuf);
 				entries[firstEntryIndex].messageLength = (uint16_t) (entries[firstEntryIndex].messageLength - bytesAtEndOfBuf);
-				serialIface->writeBytes((uint8_t*) messageBuffer, entries[firstEntryIndex].messageLength);
+				interface->writeBytes((uint8_t*) messageBuffer, entries[firstEntryIndex].messageLength);
 				messagesBegin = messageBuffer + entries[firstEntryIndex].messageLength;
 			}
 		}
-		serialIface->writeBytes((uint8_t*)"\n", 1);
+		interface->writeBytes((uint8_t*)"\n", 1);
 	}
-	serialIface->handler();
-}
-
-void BufferedLog::switchSerialInterface(AbstractSerialInterface *interface) {
-	this->serialIface = interface;
+	interface->handler();
 }
 
 ProtocolResult_t BufferedLog::getEntryOverrun(uint32_t *value) const {

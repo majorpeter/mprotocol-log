@@ -19,7 +19,7 @@ Log* Log::getInstance() {
         instance = new BufferedLog(new StdioSerialInterface());
 #else
   #if LOG_MODE == LOG_MODE_SERIAL
-        instance = new BufferedLog(VcpSerialInterface::getInstance());
+        instance = new BufferedLog();
   #else
         instance = new Log();
   #endif

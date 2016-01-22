@@ -22,7 +22,7 @@ public:
     static Log* getInstance();
     virtual ~Log() {}
 
-    virtual void handler() {}
+    virtual void handler(AbstractSerialInterface* interface) {}
 
     // these functions are inline calls, much like defines in C
     static void Notice(LogTag_t tag, const char* message = NULL, uint32_t parameter = 0) __attribute__((always_inline)) {

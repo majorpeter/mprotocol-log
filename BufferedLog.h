@@ -28,13 +28,11 @@ class BufferedLog: public Log, public Node {
     DECLARE_PROP_UINT32_RO(MessageOverrun);
     DECLARE_PROP_METHOD(TestLog);
 public:
-    BufferedLog(AbstractSerialInterface *serialIface);
+    BufferedLog();
     virtual ~BufferedLog();
     virtual void addLog(LogLevel_t level, LogTag_t tag, const char* message = NULL, uint32_t parameter = 0);
-    virtual void handler();
-    virtual void switchSerialInterface(AbstractSerialInterface *interface);
+    virtual void handler(AbstractSerialInterface *interface);
 private:
-    AbstractSerialInterface *serialIface;
     LogEntry_t *entries;
     /// entries circular buffer management
     uint8_t firstEntryIndex, nextEntryIndex;
