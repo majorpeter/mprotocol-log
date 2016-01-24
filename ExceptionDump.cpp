@@ -9,6 +9,7 @@
 #include <core_cm4.h>
 #include <diag/Trace.h>
 #include "Log.h"
+#include "../Protocol/ProtocolParser.h"
 #include <LCD/Console.h>
 
 #if defined(TRACE)
@@ -57,8 +58,7 @@ void logExceptionStack(const char* cause, ExceptionStackFrame* frame, uint32_t c
   Log::Error(EXCEPTION, "Misc");
   Log::ErrorF(EXCEPTION, " LR/EXC_RETURN= %08X", 0, lr);
   // dump everything
-  Log::getInstance()->handler();
-
+  Log::getInstance()->handler(ProtocolParser::getExistingInstance()->getInterface());
   Console::getInstance()->writeLine(cause);
 }
 
