@@ -34,6 +34,18 @@ public:
     static void Error(LogTag_t tag, const char* message = NULL, uint32_t parameter = 0) __attribute__((always_inline)) {
         Log::getInstance()->addLog(LogLevel_t::Error, tag, message, parameter);
     }
+    static void NoticeF(LogTag_t tag, const char* format = NULL, uint32_t parameter = 0, ...) {
+    	va_list args;
+    	va_start(args, parameter);
+        Log::getInstance()->addLogFormatted(LogLevel_t::Notice, tag, format, parameter, args);
+        va_end(args);
+    }
+    static void WarningF(LogTag_t tag, const char* format = NULL, uint32_t parameter = 0, ...) {
+    	va_list args;
+    	va_start(args, parameter);
+        Log::getInstance()->addLogFormatted(LogLevel_t::Warning, tag, format, parameter, args);
+        va_end(args);
+    }
     static void ErrorF(LogTag_t tag, const char* format = NULL, uint32_t parameter = 0, ...) {
     	va_list args;
     	va_start(args, parameter);
